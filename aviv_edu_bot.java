@@ -1,3 +1,9 @@
+import com.ibm.cloud.sdk.core.security.Authenticator;
+import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+import com.ibm.watson.language_translator.v3.LanguageTranslator;
+import com.ibm.watson.language_translator.v3.model.TranslateOptions;
+import com.ibm.watson.language_translator.v3.model.TranslationResult;
+import com.ibm.watson.language_translator.v3.util.Language;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,9 +19,19 @@ public class aviv_edu_bot extends TelegramLongPollingBot {
     if (update.hasMessage() && update.getMessage().hasText()) {
 
       // Here we set the variables
-      String message_text = "*" + update.getMessage().getText(); //copy the message received
-      message_text = message_text + "* *Aviv*"; //add *<wordHere>* for bold (remember to set parseMode later, and add my name to the text
+      String message_text = update.getMessage().getText(); //copy the message received
       long chat_id = update.getMessage().getChatId();
+
+      Authenticator authenticator = new IamAuthenticator("apiKey");
+      LanguageTranslator service = new LanguageTranslator("version-date", authenticator);
+      service.setServiceUrl("hereGoes/TheUrl.com");
+      TranslateOptions translateOptions = new TranslateOptions.Builder()
+              .addText(message_text)
+              .source(Language.ENGLISH)
+              .target(Language.HEBREW)
+              .build();
+      TranslationResult translationResult = service.translate(translateOptions).execute().getResult();
+      message_text = "*" + translationResult.getTranslations().get(0).getTranslation() + "*";
 
       SendMessage message =
           new SendMessage(chat_id, message_text) // Here we create a message object
