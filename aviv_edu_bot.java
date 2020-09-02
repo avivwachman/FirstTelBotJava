@@ -13,8 +13,7 @@ public class aviv_edu_bot extends TelegramLongPollingBot {
     if (update.hasMessage() && update.getMessage().hasText()) {
 
       // Here we set the variables
-      String message_text = "*" + update.getMessage().getText(); //copy the message received
-      message_text = message_text + "* *Aviv*"; //add *<wordHere>* for bold (remember to set parseMode later, and add my name to the text
+      String message_text = "*" + update.getMessage().getText() + "*"; //copy the message received
       long chat_id = update.getMessage().getChatId();
 
       SendMessage message =
